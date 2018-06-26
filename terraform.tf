@@ -255,11 +255,11 @@ resource "aws_instance" "backends" {
       "echo 'Visit: https://docs.chef.io/install_server_ha.html'",
       "echo 'Leader (BE1): sudo chef-backend-ctl create-cluster'",
       "echo 'Leader (BE1): scp /etc/chef-backend/chef-backend-secrets.json ${var.ami_user}@<BE[2,3]_IP>:'",
-      "echo 'Follower (BE[2,3]): sudo chef-backend-ctl join-cluster <BE1_IP> --accept-license --quiet -s chef-backend-secrets.json -y'",
+      "echo 'Follower (BE[2,3]): sudo chef-backend-ctl join-cluster <BE1_IP> --accept-license -s chef-backend-secrets.json -y'",
       "echo 'All BEs: sudo rm chef-backend-secrets.json'",
       "echo 'All BEs: sudo chef-backend-ctl status'",
-      "echo 'All FEs: sudo chef-backend-ctl gen-server-config <FE_FQDN> -f chef-server.rb.FE_NAME'",
-      "echo 'All FEs: scp chef-server.rb.FE_NAME USER@<IP_FE[1,2,3]>:'",
+      "echo 'For FE[1,2,3]: sudo chef-backend-ctl gen-server-config <FE_FQDN> -f chef-server.rb.FE_NAME'",
+      "echo 'For FE[1,2,3]: scp chef-server.rb.FE_NAME USER@<IP_FE[1,2,3]>:'",
     ]
   }
 }
