@@ -380,6 +380,23 @@ resource "aws_lb_target_group" "frontend" {
   port     = 443
   protocol = "HTTPS"
   vpc_id   = "${aws_vpc.main.id}"
+
+  health_check {
+    interval            = 30
+    path                = "/"
+    protocol            = "HTTPS"
+    timeout             = 5
+    healthy_threshold   = 5
+    unhealthy_threshold = 5
+    matcher             = "200-209"
+  }
+
+  tags = "${merge(
+    var.default_tags,
+    map(
+      "Name", "${local.deployment_name} Frontend Target Group"
+    )
+  )}"
 }
 
 resource "aws_lb_target_group_attachment" "frontend" {
@@ -395,4 +412,21 @@ resource "aws_route53_record" "alb" {
   type    = "CNAME"
   ttl     = "${var.r53_ttl}"
   records = ["${aws_lb.frontend.dns_name}"]
+}
+
+resource "aws_route53_health_check" "frontend" {
+  count             = "${var.chef_frontend["count"]}"
+  fqdn              = "${element(aws_instance.frontends.*.tags.Name, count.index)}"
+  port              = 443
+  type              = "HTTPS"
+  resource_path     = "/"
+  failure_threshold = "5"
+  request_interval  = "30"
+
+  tags = "${merge(
+    var.default_tags,
+    map(
+      "Name", "${local.deployment_name} ${element(aws_instance.frontends.*.tags.Name, count.index)} Health Check"
+    )
+  )}"
 }
