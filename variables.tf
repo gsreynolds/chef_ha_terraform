@@ -127,3 +127,14 @@ variable "r53_ttl" {
 
   default = "180"
 }
+
+variable "log_bucket" {
+  description = "Chef HA Log bucket"
+  default     = "chef-ha-logs"
+}
+
+# https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html#access-logging-bucket-permissions#
+variable "elb_account_id" {
+  description = "Elastic Load Balancing Account ID for region eu-west-1"
+  default     = "156460612806"
+}
