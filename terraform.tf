@@ -248,20 +248,6 @@ resource "aws_instance" "backends" {
       "echo 'postgresql.md5_auth_cidr_addresses = [\"samehost\",\"samenet\",\"${var.vpc["cidr_block"]}\"]'|sudo tee -a /etc/chef-backend/chef-backend.rb",
     ]
   }
-
-  # echo next steps
-  provisioner "remote-exec" {
-    inline = [
-      "echo 'Visit: https://docs.chef.io/install_server_ha.html'",
-      "echo 'Leader (BE1): sudo chef-backend-ctl create-cluster'",
-      "echo 'Leader (BE1): scp /etc/chef-backend/chef-backend-secrets.json ${var.ami_user}@<BE[2,3]_IP>:'",
-      "echo 'Follower (BE[2,3]): sudo chef-backend-ctl join-cluster <BE1_IP> --accept-license -s chef-backend-secrets.json -y'",
-      "echo 'All BEs: sudo rm chef-backend-secrets.json'",
-      "echo 'All BEs: sudo chef-backend-ctl status'",
-      "echo 'For FE[1,2,3]: sudo chef-backend-ctl gen-server-config <FE_FQDN> -f chef-server.rb.FE_NAME'",
-      "echo 'For FE[1,2,3]: scp chef-server.rb.FE_NAME USER@<IP_FE[1,2,3]>:'",
-    ]
-  }
 }
 
 resource "aws_route53_record" "backends" {
@@ -306,22 +292,6 @@ resource "aws_instance" "frontends" {
   provisioner "remote-exec" {
     inline = [
       "curl -L https://omnitruck.chef.io/install.sh | sudo bash -s -- -P chef-server -d /tmp -v ${var.chef_frontend["version"]}",
-    ]
-  }
-
-  # echo next steps
-  provisioner "remote-exec" {
-    inline = [
-      "echo 'Visit: https://docs.chef.io/install_server_ha.html'",
-      "echo 'All FEs: sudo cp chef-server.rb /etc/opscode/chef-server.rb'",
-      "echo 'FE1: sudo chef-server-ctl reconfigure'",
-      "echo 'FE1: scp /etc/opscode/private-chef-secrets.json ${var.ami_user}@<FE[2,3]_IP>:'",
-      "echo 'FE1: scp /var/opt/opscode/upgrades/migration-level ${var.ami_user}@<FE[2,3_IP>:'",
-      "echo 'FE[2,3]: sudo cp private-chef-secrets.json /etc/opscode/private-chef-secrets.json'",
-      "echo 'FE[2,3]: sudo mkdir -p /var/opt/opscode/upgrades/'",
-      "echo 'FE[2,3]: sudo cp migration-level /var/opt/opscode/upgrades/migration-level'",
-      "echo 'FE[2,3]: sudo touch /var/opt/opscode/bootstrapped'",
-      "echo 'FE[2,3]: sudo chef-server-ctl reconfigure'",
     ]
   }
 }
