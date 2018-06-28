@@ -12,6 +12,13 @@ resource "aws_lb" "frontend" {
     prefix  = "alb"
     enabled = true
   }
+
+  tags = "${merge(
+    var.default_tags,
+    map(
+      "Name", "${local.deployment_name} Frontend Application Load Balancer"
+    )
+  )}"
 }
 
 resource "aws_lb_listener" "frontend" {
@@ -46,7 +53,7 @@ resource "aws_lb_target_group" "frontend" {
   tags = "${merge(
     var.default_tags,
     map(
-      "Name", "${local.deployment_name} Frontend Target Group"
+      "Name", "${local.deployment_name} Frontend ALB Target Group"
     )
   )}"
 }

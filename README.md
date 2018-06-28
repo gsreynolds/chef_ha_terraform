@@ -9,7 +9,7 @@ Currently only installing the Chef Server and Backend packages, no configuration
 
 Inspiration from https://github.com/mengesb/tf_hachef
 
-## Front End Manual Config
+## Frontend Manual Config
 * Visit: https://docs.chef.io/install_server_ha.html
 * All FEs: sudo cp chef-server.rb /etc/opscode/chef-server.rb
 * FE1: sudo chef-server-ctl reconfigure
@@ -21,7 +21,7 @@ Inspiration from https://github.com/mengesb/tf_hachef
 * FE[2,3]: sudo touch /var/opt/opscode/bootstrapped
 * FE[2,3]: sudo chef-server-ctl reconfigure
 
-## Back End Manual Config
+## Backend Manual Config
 * Visit: https://docs.chef.io/install_server_ha.html
 * Leader (BE1): sudo chef-backend-ctl create-cluster
 * Leader (BE1): scp /etc/chef-backend/chef-backend-secrets.json ${var.ami_user}@<BE[2,3]_IP>:

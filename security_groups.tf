@@ -1,5 +1,4 @@
-# Security Groups Ingress
-
+# Security Groups
 ## SSH
 
 resource "aws_security_group" "ssh" {

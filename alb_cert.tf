@@ -1,6 +1,13 @@
 resource "aws_acm_certificate" "alb" {
   domain_name       = "${local.alb_fqdn}"
   validation_method = "DNS"
+
+  tags = "${merge(
+    var.default_tags,
+    map(
+      "Name", "${local.deployment_name} Frontend Certificate"
+    )
+  )}"
 }
 
 resource "aws_route53_record" "cert_validation" {

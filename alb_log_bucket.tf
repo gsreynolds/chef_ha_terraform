@@ -3,6 +3,13 @@ data "aws_caller_identity" "current" {}
 resource "aws_s3_bucket" "logs" {
   bucket = "${var.log_bucket}"
   acl    = "private"
+
+  tags = "${merge(
+    var.default_tags,
+    map(
+      "Name", "${local.deployment_name} Frontend ALB Logs"
+    )
+  )}"
 }
 
 resource "aws_s3_bucket_policy" "alb_logs" {
