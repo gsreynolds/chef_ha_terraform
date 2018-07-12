@@ -30,3 +30,7 @@ Inspiration from https://github.com/mengesb/tf_hachef
 * All BEs: sudo chef-backend-ctl status
 * For FE[1,2,3]: sudo chef-backend-ctl gen-server-config <FE_FQDN> -f chef-server.rb.FE_NAME
 * For FE[1,2,3]: scp chef-server.rb.FE_NAME USER@<IP_FE[1,2,3]>:
+
+
+## Backend failure recovery
+https://docs.chef.io/backend_failure_recovery.html

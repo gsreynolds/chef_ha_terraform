@@ -62,6 +62,20 @@ resource "aws_instance" "backends" {
   }
 }
 
+resource "aws_eip" "backends" {
+  vpc        = true
+  count      = "${var.chef_backend["count"]}"
+  instance   = "${element(aws_instance.backends.*.id, count.index)}"
+  depends_on = ["aws_internet_gateway.main"]
+
+  tags = "${merge(
+    var.default_tags,
+    map(
+      "Name", "${format("%s%02d.%s", var.instance_hostname["backend"], count.index + 1, var.domain)}"
+    )
+  )}"
+}
+
 resource "aws_instance" "frontends" {
   count                       = "${var.chef_frontend["count"]}"
   ami                         = "${data.aws_ami.ubuntu.id}"
@@ -97,4 +111,18 @@ resource "aws_instance" "frontends" {
       "curl -L https://omnitruck.chef.io/install.sh | sudo bash -s -- -P chef-server -d /tmp -v ${var.chef_frontend["version"]}",
     ]
   }
+}
+
+resource "aws_eip" "frontends" {
+  vpc        = true
+  count      = "${var.chef_frontend["count"]}"
+  instance   = "${element(aws_instance.frontends.*.id, count.index)}"
+  depends_on = ["aws_internet_gateway.main"]
+
+  tags = "${merge(
+    var.default_tags,
+    map(
+      "Name", "${format("%s%02d.%s", var.instance_hostname["frontend"], count.index + 1, var.domain)}"
+    )
+  )}"
 }

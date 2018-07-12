@@ -9,7 +9,7 @@ resource "aws_route53_record" "backends" {
   name    = "${element(aws_instance.backends.*.tags.Name, count.index)}"
   type    = "A"
   ttl     = "${var.r53_ttl}"
-  records = ["${element(aws_instance.backends.*.public_ip, count.index)}"]
+  records = ["${element(aws_eip.backends.*.public_ip, count.index)}"]
 }
 
 resource "aws_route53_record" "frontend" {
@@ -18,7 +18,7 @@ resource "aws_route53_record" "frontend" {
   name    = "${element(aws_instance.frontends.*.tags.Name, count.index)}"
   type    = "A"
   ttl     = "${var.r53_ttl}"
-  records = ["${element(aws_instance.frontends.*.public_ip, count.index)}"]
+  records = ["${element(aws_eip.frontends.*.public_ip, count.index)}"]
 }
 
 resource "aws_route53_record" "alb" {
