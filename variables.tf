@@ -44,7 +44,7 @@ variable "ssh_whitelist_cidrs" {
 }
 
 variable "domain" {
-  description = "Frontend ALB domain name"
+  description = "Zone domain name"
   default     = ""
 }
 

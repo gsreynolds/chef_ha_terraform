@@ -46,16 +46,10 @@ resource "aws_instance" "backends" {
     private_key = "${file("${var.instance_keys["key_file"]}")}"
   }
 
-  # Install
   provisioner "remote-exec" {
     inline = [
+      "sudo apt-get install ntp",
       "curl -L https://omnitruck.chef.io/install.sh | sudo bash -s -- -P chef-backend -d /tmp -v ${var.chef_backend["version"]}",
-    ]
-  }
-
-  # Configure
-  provisioner "remote-exec" {
-    inline = [
       "echo 'publish_address \"${self.private_ip}\"'|sudo tee -a /etc/chef-backend/chef-backend.rb",
       "echo 'postgresql.md5_auth_cidr_addresses = [\"samehost\",\"samenet\",\"${var.vpc["cidr_block"]}\"]'|sudo tee -a /etc/chef-backend/chef-backend.rb",
     ]
@@ -108,6 +102,7 @@ resource "aws_instance" "frontends" {
 
   provisioner "remote-exec" {
     inline = [
+      "sudo apt-get install ntp",
       "curl -L https://omnitruck.chef.io/install.sh | sudo bash -s -- -P chef-server -d /tmp -v ${var.chef_frontend["version"]}",
     ]
   }
